@@ -1,0 +1,15 @@
+{
+  "name": "AngularJS-NodeJs-MEAN-App",
+  "version": "1.0.0",
+  "description": "first play with MEAN",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "George somerville",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.2",
+    "jade": "^1.9.2"
+  }
+}
