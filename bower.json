@@ -1,0 +1,17 @@
+{
+  "name": "AngularJS-NodeJs-MEAN-App",
+  "version": "0.0.0",
+  "homepage": "https://github.com/GeorgeSomerville1992/Mean-Stack-App",
+  "authors": [
+    "George Somerville <georgesomerville1992@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "toastr": "~2.1.0",
+    "angular": "~1.3.14",
+    "angular-resource": "~1.3.14",
+    "angular-route": "~1.3.14"
+  }
+}
