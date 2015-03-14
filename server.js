@@ -51,24 +51,14 @@ db.on('error',function(){
 db.once('open', function callback(){
 	console.log("angualr test db open")
 })
-var messageSchema = mongoose.Schema({message: String});
-var Message = mongoose.model('message', messageSchema);
-//create model basedon above schemea 
-var mongoMessage;
-// create variable to hold data 
 
-Message.findOne().exec(function(err,messageDoc){
-	mongoMessage = messageDoc.message;
-});
 // perform single docucment
 app.get('/partials/:partialPath', function(req,res){
 	res.render('partials/'+ req.params.partialPath);
 })
 
 app.get('*',function(req, res){
-	res.render('index', {
-		mongoMessage: mongoMessage
-	});
+	res.render('index');
 });
 
 // any other request will be handled to this route
