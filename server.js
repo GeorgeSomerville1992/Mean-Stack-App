@@ -1,65 +1,62 @@
 var express = require('express'),
-	stylus = require('stylus'),
-	logger = require('morgan'),
-	bodyParser = require('body-Parser');
-	mongoose = require('mongoose')
+	mongoose = require('mongoose'),
+	passport = require('passport')
+	localStrategy = require('passport-local').Strategy;
 var env = process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 var app = express() // run express whic comes from the requre express
 
-function compile(str,path){
-	return stylus(str).set('filename',path);
-}
+var config = require('./server/config/config')[env]
 
 
-// config view engine
-app.set('views', __dirname + '/server/views');
-app.set('view engine','jade');
-app.use(logger('dev'));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
 
-app.use(stylus.middleware(
-	{
-		src: __dirname + '/public',
-		compile:compile
+require('./server/config/express')(app,config);
+
+require('./server/config/mongoose')(config);
+
+var User = mongoose.model('User');
+passport.use(new localStrategy(
+	function(username,password,done){
+		User.findOne({username:username}).exec(function(err,user){
+			// looks up user via username
+			return user ? done(null,user):done(null,false)
+			// if(user){
+			// 	return done(null,user);
+
+			// }else{
+			// 	return done(null,false)
+			// }
+		})
+
 	}
-));
-// set up static middleware
-// this is static router handling.
-app.use(express.static(__dirname + '/public'));
+))
 
-if(env === 'development'){
-	mongoose.connect('mongodb://localhost/angularTestApp');
-}else{
-	mongoose.connect('mongodb://george:password@dbh43.mongolab.com:27437/mean-stack-test');
-}
+passport.serializeUser(function(user,done){
 
+	if(user){
+		done(null,user._id)
+	}
 
-// mongoose.connect('mongodb://localhost/ang{ularTestApp');
-// mongoose.connect('mongodb://george:password@dbh43.mongolab.com:27437/mean-stack-test');
-var db = mongoose.connection;
-// use variable to listen to mongo events on database
-// so when an error happens => log out connection error
-
-// this is the concept of catching events, we can use each one to fire anomalas function to do stuff
-db.on('error',function(){
-	console.log("something wrong with database")
-})
-// more intersting way
-// db.on('error', console.error.bind(console,"something wrong"))
-db.once('open', function callback(){
-	console.log("angualr test db open")
-})
-
-// perform single docucment
-app.get('/partials/:partialPath', function(req,res){
-	res.render('partials/'+ req.params.partialPath);
-})
-
-app.get('*',function(req, res){
-	res.render('index');
 });
+
+passport.deserializeUser(function(id,done){
+	User.findOne({_id:id}).exec(function(err,user){
+		return user ? done(null,user):done(null,false)
+		// if(user){
+		// 	return done(null,user);
+
+		// }else{
+		// 	return done(null,false)
+		// }
+	})
+})
+require('./server/config/routes')(app);
+
+mongoose.connect(config.db);
+
+
+
+
 
 // any other request will be handled to this route
 // this will get serverd up to the client and we'll make the clients reponsablity to 
@@ -68,9 +65,7 @@ app.get('*',function(req, res){
 
 // can be better just to create your routes in sever and match them up in angular
 
-var port = process.env.PORT || 3030;
 
-app.listen(port);
+app.listen(config.port);
 
-
-console.log("listen on port " + port + "yeah") 
+console.log("listen on port " + config.port + "yeah") 

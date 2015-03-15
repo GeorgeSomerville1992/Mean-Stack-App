@@ -4,7 +4,7 @@ angular.module('app').config(function($routeProvider,$locationProvider){
 	$locationProvider.html5Mode(true);
 	// define routes
 	$routeProvider
-		.when('/',{templateUrl:'/partials/main', controller:'mainCtrl'})
+		.when('/',{templateUrl:'/partials/main/main', controller:'mainCtrl'})
 })
 
 // create quick controller to verify app works
